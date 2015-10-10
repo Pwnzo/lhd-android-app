@@ -7,6 +7,7 @@ import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,18 +18,102 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 public class MotionActivity extends Activity {
+
+    class FaceCatcher implements Camera.FaceDetectionListener {
+        private boolean light = false;
+        @Override
+        public void onFaceDetection(Camera.Face[] faces, Camera camera) {
+            if(!this.light) {
+                this.light = true;
+                System.out.println("Detected!");
+                //SmartThingsResponds st = new SmartThingsResponds();
+                //st.execute(true);
+            } else {
+                System.out.println("The light is already on");
+                System.out.println(faces.toString());
+            }
+        }
+    }
+
+    private class SmartThingsResponds extends AsyncTask<Boolean, Void, String> {
+
+        InputStream inputStream = null;
+        String mResult = "";
+
+        @Override
+        protected String doInBackground(Boolean... params) {
+            mResult = turn(params[0]);
+            return mResult;
+        } // protected String doInBackground(String... params)
+
+        public String turn(boolean turnStatus) {
+            HttpURLConnection c = null;
+            String event = (turnStatus) ? "lightOn" : "lightOff";
+            try {
+                URL u = new URL("https://maker.ifttt.com/trigger/" + event + "/with/key/bKp8jzO7rkA7xJ5ReifJis");
+                c = (HttpURLConnection) u.openConnection();
+                c.setRequestMethod("GET");
+                c.setRequestProperty("Content-length", "0");
+                c.setUseCaches(false);
+                c.setAllowUserInteraction(false);
+                c.setConnectTimeout(1000);
+                c.setReadTimeout(1000);
+                c.connect();
+                int status = c.getResponseCode();
+
+                switch (status) {
+                    case 200:
+                    case 201:
+                        BufferedReader br = new BufferedReader(new InputStreamReader(c.getInputStream()));
+                        StringBuilder sb = new StringBuilder();
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            sb.append(line+"\n");
+                        }
+                        br.close();
+                        return sb.toString();
+                }
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                if (c != null) {
+                    try {
+                        c.disconnect();
+                    } catch (Exception ex) {
+                        Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+            return null;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_motion);
-
+        FaceCatcher f = new FaceCatcher();
         Camera camera = getCameraInstance();
+        camera.setFaceDetectionListener(f);
 
         CameraPreview preview = new CameraPreview(this, camera);
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.camera_preview);
         frameLayout.addView(preview);
+        camera.startFaceDetection();
     }
 
     /** A safe way to get an instance of the Came` object. */
