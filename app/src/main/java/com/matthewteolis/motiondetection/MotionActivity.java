@@ -1,9 +1,6 @@
 package com.matthewteolis.motiondetection;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 public class MotionActivity extends Activity {
 
@@ -23,25 +19,6 @@ public class MotionActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_motion);
-
-        Camera camera = getCameraInstance();
-
-        CameraPreview preview = new CameraPreview(this, camera);
-        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.camera_preview);
-        frameLayout.addView(preview);
-    }
-
-    /** A safe way to get an instance of the Came` object. */
-    public static Camera getCameraInstance(){
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-            e.printStackTrace();
-        }
-        return c; // returns null if camera is unavailable
     }
 
     @Override
