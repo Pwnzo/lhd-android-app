@@ -1,19 +1,9 @@
 package com.matthewteolis.motiondetection;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -38,8 +28,8 @@ public class MotionActivity extends Activity {
             if(!this.light) {
                 this.light = true;
                 System.out.println("Detected!");
-                //SmartThingsResponds st = new SmartThingsResponds();
-                //st.execute(true);
+                SmartThingsResponds st = new SmartThingsResponds();
+                st.execute(true);
             } else {
                 System.out.println("The light is already on");
                 System.out.println(faces.toString());
@@ -60,7 +50,7 @@ public class MotionActivity extends Activity {
 
         public String turn(boolean turnStatus) {
             HttpURLConnection c = null;
-            String event = (turnStatus) ? "lightOn" : "lightOff";
+            String event = (turnStatus) ? "on" : "off";
             try {
                 URL u = new URL("https://maker.ifttt.com/trigger/" + event + "/with/key/bKp8jzO7rkA7xJ5ReifJis");
                 c = (HttpURLConnection) u.openConnection();
