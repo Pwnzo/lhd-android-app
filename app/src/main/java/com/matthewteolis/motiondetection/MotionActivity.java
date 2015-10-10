@@ -2,8 +2,10 @@ package com.matthewteolis.motiondetection;
 
 import android.app.Activity;
 import android.hardware.Camera;
+import android.media.FaceDetector;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -25,14 +27,27 @@ public class MotionActivity extends Activity {
         private boolean light = false;
         @Override
         public void onFaceDetection(Camera.Face[] faces, Camera camera) {
-            if(!this.light) {
-                this.light = true;
-                System.out.println("Detected!");
-                SmartThingsResponds st = new SmartThingsResponds();
-                st.execute(true);
+            SmartThingsResponds st = new SmartThingsResponds();
+
+            if(faces != null && faces.length > 0) {
+                for (Camera.Face face : faces) {
+                    System.out.println(face.score);
+                }
+                if (!this.light) {
+                    this.light = true;
+                    System.out.println("Detected!");
+                    st.execute(true);
+                } else {
+                    System.out.println("The light is already on");
+                    System.out.println(faces.toString());
+                }
             } else {
-                System.out.println("The light is already on");
-                System.out.println(faces.toString());
+                if(this.light) {
+                    st.execute(false);
+                    this.light = false;
+                } else {
+                    System.out.println("The light is off...");
+                }
             }
         }
     }
