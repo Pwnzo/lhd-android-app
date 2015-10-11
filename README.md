@@ -8,10 +8,6 @@
 <a href="#">
 <img src="https://img.shields.io/badge/Api-19+-green.svg" alt="min api">
 </a>
-
-<a href="#">
-<img src="http://giant.gfycat.com/SentimentalAmbitiousKomododragon.gif" alt="min api">
-</a>
 </p>
 Here is the repo for Shiny motion. This app uses your phone as a motion detector. It talks to [IFTTT](http://ifttt.com) using the [Maker Channel](http://ifttt.com/maker).
 
