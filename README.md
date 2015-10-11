@@ -1,6 +1,6 @@
 # Shiny motion
 
-![App Icon](https://i.imgur.com/W0oryRz.png)
+![App Icon](screenshot.gif)
 <p align="center">
 <a href="http://opensource.org/licenses/Apache-2.0">
 <img src="https://img.shields.io/hexpm/l/plug.svg" alt="npm version">
@@ -9,8 +9,6 @@
 <img src="https://img.shields.io/badge/Api-19+-green.svg" alt="min api">
 </a>
 
-
-![demo](screenshot.gif)
 
 </p>
 Here is the repo for Shiny motion. This app uses your phone as a motion detector. It talks to [IFTTT](http://ifttt.com) using the [Maker Channel](http://ifttt.com/maker).
